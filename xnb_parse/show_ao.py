@@ -10,6 +10,8 @@ from pyglet.gl import *  # pylint: disable-msg=W0614,W0401
 
 from xnb_parse.fez_content_manager import FezContentManager
 from xnb_parse.trackball_camera import TrackballCamera, norm1, vec_args
+from xnb_parse.type_reader import ReaderError
+from xnb_parse.xna_content_manager import ContentManager
 from xnb_parse.xna_types.xna_math import Vector3
 
 
@@ -170,22 +172,22 @@ class AO(object):
 
 def main():
     if len(sys.argv) == 3:
-        # try and get 8x AA failing back to 4x and then none
+        # try and get config with 4x AA enabled, failing back to no AA
         platform = pyglet.window.get_platform()
         display = platform.get_default_display()
         screen = display.get_default_screen()
-        template = pyglet.gl.Config(sample_buffers=1, samples=8)
+        template = pyglet.gl.Config(sample_buffers=1, samples=4)
         try:
             config = screen.get_best_config(template)
         except pyglet.window.NoSuchConfigException:
-            template = pyglet.gl.Config(sample_buffers=1, samples=4)
-            try:
-                config = screen.get_best_config(template)
-            except pyglet.window.NoSuchConfigException:
-                template = pyglet.gl.Config()
-                config = screen.get_best_config(template)
-        content_manager = FezContentManager(sys.argv[1])
+            template = pyglet.gl.Config()
+            config = screen.get_best_config(template)
+        # try and use FezContentManager if it works, failing back to directory reader
+        try:
+            content_manager = FezContentManager(sys.argv[1])
+        except ReaderError:
+            content_manager = ContentManager(sys.argv[1])
         AOWindow(content_manager=content_manager, asset_name=sys.argv[2], config=config)
         pyglet.app.run()
     else:
-        print('show_ao.py Content objectao')
+        print('show_ao.py Content|out objectao')
