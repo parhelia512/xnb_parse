@@ -8,5 +8,6 @@ from xnb_parse.type_readers import xna_graphics, xna_math, xna_media, xna_primit
 
 from xnb_parse.type_readers.fez import *  # pylint: disable-msg=W0401
 
+from xnb_parse.type_readers.xTile import *  # pylint: disable-msg=W0401
 
 __all__ = ['xna_graphics', 'xna_math', 'xna_media', 'xna_primitive', 'xna_system']

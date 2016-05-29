@@ -98,6 +98,17 @@ class BinaryStream(BytesIO):
         bytes_written += self.write(raw_value)
         return bytes_written
 
+    def read_long_string(self):
+        size = self.read_int32()
+        raw_value = self.read(size)
+        return raw_value.decode('utf-8')
+
+    def write_long_string(self, value):
+        raw_value = value.encode('utf-8')
+        bytes_written = self.write_int32(len(raw_value))
+        bytes_written += self.write(raw_value)
+        return bytes_written
+
     def read_cstring(self, encoding='utf-8'):
         raw_value = bytearray()
         cur_byte = self.read(1)
