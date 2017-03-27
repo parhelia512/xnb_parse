@@ -8,8 +8,7 @@ from xnb_parse.type_spec import TypeSpec
 from xnb_parse.type_reader import TypeReaderPlugin, ReaderError, GenericTypeReader, BaseTypeReader
 
 # pull in all typereaders
-#noinspection PyUnresolvedReferences
-import xnb_parse.type_readers  # pylint: disable-msg=W0611
+import xnb_parse.type_readers
 
 
 class TypeReaderManager(object):
@@ -18,12 +17,12 @@ class TypeReaderManager(object):
         self.type_readers_type = {}
         self.generic_type_readers = {}
         self.generic_type_readers_type = {}
-        for class_ in TypeReaderPlugin.__subclasses__():  # pylint: disable-msg=E1101
+        for class_ in TypeReaderPlugin.__subclasses__():
             if issubclass(class_, GenericTypeReader):
                 if class_.generic_reader_name in self.generic_type_readers:
                     raise ReaderError("Duplicate generic type reader name: '{}'".format(class_.generic_reader_name))
                 self.generic_type_readers[class_.generic_reader_name] = class_
-                if class_.generic_target_type in self.generic_type_readers:
+                if class_.generic_target_type in self.generic_type_readers_type:
                     raise ReaderError("Duplicate generic type reader type: '{}'".format(class_.generic_target_type))
                 self.generic_type_readers_type[class_.generic_target_type] = class_
             elif issubclass(class_, BaseTypeReader):
